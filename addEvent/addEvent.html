@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Event</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input[type="text"], input[type="datetime-local"], select, textarea {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 100px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Create Event</h1>
+  <form id="create-event-form">
+    <label for="event-name">Event Name</label>
+    <input type="text" id="event-name" name="event_name" required>
+
+    <label for="event-details">Event Details (Max 100 characters)</label>
+    <textarea id="event-details" name="event_details" maxlength="100" required></textarea>
+
+    <label for="event-time">Event Time</label>
+    <input type="datetime-local" id="event-time" name="event_time" required>
+
+    <label for="event-privacy">Event Privacy</label>
+    <select id="event-privacy" name="event_privacy" required>
+      <option value="Public">Public</option>
+      <option value="Private">Private</option>
+    </select>
+
+    <label for="event-price">Event Price</label>
+    <input type="text" id="event-price" name="event_price" required>
+
+    <label for="event-location">Event Location</label>
+    <input type="text" id="event-location" name="event_location" required>
+
+    <label for="category">Category</label>
+    <select id="category" name="category" required>
+    <option value="Literary">Literary</option>
+    <option value="Music">Music</option>
+    <option value="Sports">Sports</option>
+    <option value="Tech">Tech</option>
+    </select>
+
+    <button type="submit">Create Event</button>
+  </form>
+</div>
+
+<script>
+  document.getElementById('create-event-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData.entries());
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (userData) {
+      data.event_owner = userData.email;
+    }
+
+    try {
+      const response = await fetch('/addEvent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        alert('Event created successfully!');
+        window.location.href = '/dashboard/dashboard.html';
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error('Error creating event:', error);
+      alert('An error occurred while creating the event.');
+    }
+  });
+</script>
+
+</body>
+</html>

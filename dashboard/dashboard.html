@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Management</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    .toolbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .toolbar h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .toolbar .auth {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+    }
+
+    .toolbar .auth a {
+      margin-right: 15px;
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .toolbar .auth a:hover {
+      color: #ddd;
+    }
+
+    .toolbar .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 60px;
+      right: 0;
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 10px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: rgba(240, 240, 240, 0.2);
+    }
+
+    .event-list {
+      padding: 40px 20px;
+      margin-top: 80px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f8f8f8;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <div class="auth" id="auth">
+    <a href="/"><h1>EventManage</h1></a>
+    </div>
+  <div class="auth" id="auth">
+    <a href="/dashboard/dashboard.html">My Bookings</a>
+    <span id="user-name"></span>
+    <img src="/assets/profile.png" alt="Profile Picture" class="profile-pic" id="profile-pic">
+    <div class="dropdown-menu" id="dropdown-menu">
+      <a href="/dashboard/dashboard.html">My Bookings</a>
+      <a href="/myEvents/myEvents.html">My Events</a>
+      <a href="#" id="logout">Logout</a>
+    </div>
+  </div>
+</div>
+
+<!-- Event list -->
+<div class="event-list">
+  <h1>My Bookings</h1>
+  <table id="event-table">
+    <thead>
+      <tr>
+        <th>Event Id</th>
+        <th>Event Name</th>
+        <th>Tickets</th>
+        <th>Location</th>
+        <th>Time</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody id="event-list">
+      <!-- Events will be dynamically inserted here -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+
+    // Fetch user data from localStorage
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (!userData) {
+      window.location.href = '/auth/login.html';
+      return;
+    }
+
+    document.getElementById('user-name').textContent = userData.name;
+
+    const authDiv = document.getElementById('auth');
+    const profilePic = document.getElementById('profile-pic');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+
+    profilePic.addEventListener('click', () => {
+      dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.getElementById('logout').addEventListener('click', () => {
+      localStorage.removeItem('user');
+      window.location.href = '/';
+    });
+
+    window.addEventListener('click', (e) => {
+      if (!e.target.matches('#profile-pic') && !e.target.matches('.dropdown-menu') && !e.target.matches('.dropdown-menu a')) {
+        dropdownMenu.style.display = 'none';
+      }
+    });
+
+    // Fetch event data
+    try {
+  const response = await fetch(`/myBookings?email=${encodeURIComponent(userData.email)}`);
+  const bookings = await response.json();
+  const eventList = document.getElementById('event-list');
+  eventList.innerHTML = '';
+
+  bookings.forEach(async (booking) => {
+    const response_event = await fetch(`/eventDetails?id=${encodeURIComponent(booking.event_id)}`);
+    const eventDetails = await response_event.json();
+    // Create a new row for each booking
+    const row = document.createElement('tr');
+
+    // Parse and format the event time
+    const eventDate = new Date(eventDetails.event_time);
+    const formattedDate = eventDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    const formattedTime = eventDate.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+
+    row.innerHTML = `
+      <td>${booking.event_id}</td>
+      <td>${eventDetails.event_name}</td>
+      <td>${booking.tickets}</td>
+      <td>${eventDetails.event_location}</td>
+      <td>${formattedDate} ${formattedTime}</td>
+      <td>$${eventDetails.event_price}</td>
+    `;
+    
+    row.addEventListener('click', () => {
+          window.location.href = `/eventDetails/eventSite.html?id=${booking.event_id}`;
+        });
+
+    // Append the row to the table
+    eventList.appendChild(row);
+  });
+
+} catch (error) {
+  console.error('Error fetching events:', error);
+}
+
+
+  });
+
+
+
+</script>
+
+</body>
+</html>

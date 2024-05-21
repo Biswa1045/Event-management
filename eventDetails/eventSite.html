@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details</title>
+    <link rel="stylesheet" href="eventDetails.css">
+    <style>
+        .notification-card {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .notification-content {
+            flex-grow: 1;
+        }
+        .chat-message {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+        }
+
+        .chat-message span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toolbar">
+        <div class="auth" id="auth">
+            <a href="/">
+                <h1>EventManage</h1>
+            </a>
+        </div>
+        <div class="auth" id="auth-links">
+            <a href="/dashboard/dashboard.html">My Bookings</a>
+            <span id="user-name"></span>
+            <img src="/assets/profile.png" alt="Profile Picture" class="profile-pic" id="profile-pic">
+            <div class="dropdown-menu" id="dropdown-menu">
+                <a href="/dashboard/dashboard.html">My Bookings</a>
+                <a href="/myEvents/myEvents.html">My Events</a>
+                <a href="#" id="logout">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="event-lists">
+        <div>
+            <div class="event-details" id="event-details">
+                <!-- Event details content will be dynamically inserted here -->
+            </div>
+            <div class="notification-card" id="notification-card">
+                <span class="notification-icon">🔔</span>
+                <div class="notification-content" id="notification-content">
+                    <!-- Notification text will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+       
+
+        
+
+        <div class="event-chat">
+            <div id="ticket-total" class="ticket-total">
+                <!-- Total tickets will be displayed here -->
+            </div>
+            <div class="chat-box">
+                <div class="chat-header">
+                    <h3>Event Chat</h3>
+                </div>
+                <div class="chat-content" id="chat-content">
+                    <!-- Chat messages will appear here -->
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="chat-input" placeholder="Type a message..." />
+                    <button id="send-button">Send</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('id');
+            console.log(eventId);
+            if (!eventId) {
+                console.error('Event ID is missing.');
+                return;
+            }
+            const userData = JSON.parse(localStorage.getItem('user'));
+            if (!userData) {
+                window.location.href = '/auth/login.html';
+                return;
+            }
+
+            document.getElementById('user-name').textContent = userData.name;
+
+            const authDiv = document.getElementById('auth');
+            const profilePic = document.getElementById('profile-pic');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+
+            profilePic.addEventListener('click', () => {
+                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+            });
+
+            document.getElementById('logout').addEventListener('click', () => {
+                localStorage.removeItem('user');
+                window.location.href = '/';
+            });
+
+            window.addEventListener('click', (e) => {
+                if (!e.target.matches('#profile-pic') && !e.target.matches('.dropdown-menu') && !e.target.matches('.dropdown-menu a')) {
+                    dropdownMenu.style.display = 'none';
+                }
+            });
+
+            try {
+                const response = await fetch(`/eventDetails?id=${eventId}`);
+                const response_attendance = await fetch(`/eventTicketsCount?id=${eventId}`);
+                const ticket_total = await response_attendance.json();
+                console.log(ticket_total.total_tickets)
+                const categoryImages = {
+                    'Literary': '/assets/Literary.jpg',
+                    'Music': '/assets/Music.jpg',
+                    'Sports': '/assets/Sports.jpg',
+                    'Tech': '/assets/Tech.jpg'
+                };
+                const event = await response.json();
+                const ticketTotalElement = document.getElementById('ticket-total');
+                ticketTotalElement.textContent = `Event Attendance: ${ticket_total.total_tickets}`;
+
+                const eventDateTime = new Date(event.event_time);
+                const formattedDate = eventDateTime.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                const formattedTime = eventDateTime.toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true
+                });
+
+                const imageSrc = categoryImages[event.category] || '/assets/Tech.jpg';
+                const eventDetails = document.getElementById('event-details');
+                eventDetails.innerHTML = `
+                    <img src="${imageSrc}" alt="${event.category}" style="width: 600px; height: 200px; object-fit: cover;">
+                    <h1>${event.event_name}</h1>
+                    <p><strong>Category:</strong> ${event.category}</p>
+                    <p><strong>Location:</strong> ${event.event_location}</p>
+                    <p><strong>Date:</strong> ${formattedDate} ${formattedTime}</p>
+                    <p><strong>Price:</strong> $${event.event_price}</p>
+                    <p>${event.event_details}</p>
+                `;
+
+                
+                const notificationContent = document.getElementById('notification-content');
+                notificationContent.textContent = event.notification;
+
+            } catch (error) {
+                console.error('Error fetching event details:', error);
+            }
+            // Fetch and display chat messages
+            try {
+                const chatResponse = await fetch(`/chatDetails?event_id=${eventId}`);
+                const chats = await chatResponse.json();
+                const chatContent = document.getElementById('chat-content');
+
+                chats.forEach(chat => {
+                    const chatMessage = document.createElement('div');
+                    chatMessage.className = 'chat-message';
+                    chatMessage.innerHTML = `<span>${chat.user_name}:</span> ${chat.chat}`;
+                    chatContent.appendChild(chatMessage);
+                });
+
+                chatContent.scrollTop = chatContent.scrollHeight; // Scroll to the bottom
+
+            } catch (error) {
+                console.error('Error fetching chat messages:', error);
+            }
+
+            document.getElementById('send-button').addEventListener('click', async function () {
+                const chatInput = document.getElementById('chat-input');
+                const chatContent = document.getElementById('chat-content');
+                const chatMessage = chatInput.value.trim();
+
+                if (chatMessage !== '') {
+                    try {
+                        const response = await fetch('/addChat', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                chat: chatMessage,
+                                event_id: eventId,
+                                user_email: userData.email,
+                                user_name: userData.name
+                            })
+                        });
+
+                        if (response.ok) {
+                            const newMessage = document.createElement('div');
+                            newMessage.className = 'chat-message';
+                            newMessage.innerHTML = `<span>${userData.name}:</span> ${chatMessage}`;
+                          //  newMessage.innerHTML = `<span style="color: ${event.event_owner === userData.email ? 'red' : 'black'}">${userData.name}:</span> ${chatMessage}`;
+
+                            chatContent.appendChild(newMessage);
+                            chatInput.value = '';
+                            chatContent.scrollTop = chatContent.scrollHeight; // Scroll to the bottom
+                        } else {
+                            console.error('Failed to add chat:', await response.json());
+                        }
+                    } catch (error) {
+                        console.error('Error adding chat:', error);
+                    }
+                }
+            });
+
+            // Optional: Allow pressing Enter to send a message
+            document.getElementById('chat-input').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    document.getElementById('send-button').click();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

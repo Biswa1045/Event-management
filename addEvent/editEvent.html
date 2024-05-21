@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Event</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      padding: 40px;
+    }
+
+    .main-container {
+      display: flex;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .container,
+    .notification-container {
+      margin: 0 20px;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      flex-grow: 1;
+    }
+
+    .container {
+      max-width: 600px;
+    }
+
+    h1,
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="datetime-local"],
+    select,
+    textarea {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 100px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .notification {
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #e9ecef;
+      font-size: 14px;
+    }
+
+    .textarea-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .textarea-container textarea {
+      max-width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="main-container">
+    <div class="container">
+      <h1>Edit Event</h1>
+      <form id="edit-event-form">
+        <label for="event-name">Event Name</label>
+        <input type="text" id="event-name" name="event_name" required>
+
+        <label for="event-details">Event Details (Max 100 characters)</label>
+        <textarea id="event-details" name="event_details" maxlength="100" required></textarea>
+
+        <label for="event-time">Event Time</label>
+        <input type="datetime-local" id="event-time" name="event_time" required>
+
+        <label for="event-privacy">Event Privacy</label>
+        <select id="event-privacy" name="event_privacy" required>
+          <option value="Public">Public</option>
+          <option value="Private">Private</option>
+        </select>
+
+        <label for="event-price">Event Price</label>
+        <input type="text" id="event-price" name="event_price" required>
+
+        <label for="event-location">Event Location</label>
+        <input type="text" id="event-location" name="event_location" required>
+
+        <label for="category">Category</label>
+        <select id="category" name="category" required>
+          <option value="Literary">Literary</option>
+          <option value="Music">Music</option>
+          <option value="Sports">Sports</option>
+          <option value="Tech">Tech</option>
+        </select>
+
+        <button type="submit">Update Event</button>
+      </form>
+    </div>
+
+    <div class="notification-container">
+      <h2>Notifications</h2>
+      <div class="textarea-container">
+        <textarea id="notification-text" name="notification_text" maxlength="100" required></textarea>
+
+      </div>
+      <button id="notification-update">Update Notification</button>
+    </div>
+  </div>
+
+  <script>
+    async function fetchEventDetails() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const eventId = urlParams.get('id');
+
+      try {
+        const response = await fetch(`/eventDetails?id=${encodeURIComponent(eventId)}`);
+        const event = await response.json();
+
+        document.getElementById('event-name').value = event.event_name;
+        document.getElementById('event-details').value = event.event_details;
+        document.getElementById('event-time').value = new Date(event.event_time).toISOString().slice(0, 16);
+        document.getElementById('event-privacy').value = event.event_privacy;
+        document.getElementById('event-price').value = event.event_price;
+        document.getElementById('event-location').value = event.event_location;
+        document.getElementById('category').value = event.category;
+        document.getElementById('notification-text').value = event.notification;
+      } catch (error) {
+        console.error('Error fetching event details:', error);
+        alert('An error occurred while fetching event details.');
+      }
+    }
+    document.getElementById('notification-update').addEventListener('click', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const eventId = urlParams.get('id');
+      const notificationText = document.getElementById('notification-text').value;
+      try{
+        const response = await fetch(`/updateNotification`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            notification: notificationText,
+            event_id: eventId
+      })
+        });
+
+        if (response.ok) {
+          alert('Notification updated successfully!');
+          
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      }catch(error){
+        console.error('Error updating notification:', error);
+        alert('An error occurred while updating the notification.');
+      }
+    });
+
+    document.getElementById('edit-event-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const eventId = urlParams.get('id');
+
+      const formData = new FormData(event.target);
+      const data = Object.fromEntries(formData.entries());
+      data.event_id = eventId;
+
+      try {
+        const response = await fetch(`/updateEvent`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          alert('Event updated successfully!');
+          window.location.href = '/myEvents/myEvents.html';
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        console.error('Error updating event:', error);
+        alert('An error occurred while updating the event.');
+      }
+    });
+
+    fetchEventDetails();
+  </script>
+
+</body>
+
+</html>

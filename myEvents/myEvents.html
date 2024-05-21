@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Events</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    .toolbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .toolbar h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .toolbar .auth {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+    }
+
+    .toolbar .auth a {
+      margin-right: 15px;
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .toolbar .auth a:hover {
+      color: #ddd;
+    }
+
+    .toolbar .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 60px;
+      right: 0;
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 10px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: rgba(240, 240, 240, 0.2);
+    }
+
+    .content {
+      padding: 80px 20px 20px;
+    }
+
+    .content h2 {
+      margin-top: 0;
+      font-size: 28px;
+      text-align: center;
+      color: #333;
+    }
+
+    .event-list {
+      padding: 40px 20px;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f8f8f8;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    .info-card-container {
+      display: flex;
+      margin-top: 100px;
+      gap: 20px; /* Space between cards */
+    }
+
+    .info-card {
+      background-color: #f8f9fa; /* Light grey background */
+      border: 1px solid #dee2e6; /* Border color */
+      border-radius: 8px; /* Rounded corners */
+      padding: 20px;
+      text-align: center;
+      flex: 1;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
+    }
+
+    .info-card .number {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #343a40; /* Dark grey color */
+      margin-bottom: 10px;
+    }
+
+    .info-card .subtitle {
+      font-size: 1em;
+      color: #6c757d; /* Medium grey color */
+    }
+  </style>
+</head>
+<body>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <div class="auth" id="auth">
+    <a href="/"><h1>EventManage</h1></a>
+  </div>
+  <div class="auth" id="auth">
+    <a href="/dashboard/dashboard.html">My Bookings</a>
+    <span id="user-name"></span>
+    <img src="/assets/profile.png" alt="Profile Picture" class="profile-pic" id="profile-pic">
+    <div class="dropdown-menu" id="dropdown-menu">
+      <a href="/dashboard/dashboard.html">My Bookings</a>
+      <a href="/myEvents/myEvents.html">My Events</a>
+      <a href="#" id="logout">Logout</a>
+    </div>
+  </div>
+</div>
+<div class="info-card-container">
+  <div class="info-card">
+    <div class="number" id="tickets_count">0</div>
+    <div class="subtitle">Tickets</div>
+  </div>
+  <div class="info-card">
+    <div class="number" id="tickets_price">0</div>
+    <div class="subtitle">Payment</div>
+  </div>
+</div>
+<!-- Content -->
+<div class="event-list">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h1 style="margin: 0;">My Events</h1>
+    <a href="/addEvent/addEvent.html">
+      <button style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Create Event</button>
+    </a>
+  </div>
+
+  <table id="event-table">
+    <thead>
+      <tr>
+        <th>Event Name</th>
+        <th>Category</th>
+        <th>Date and Time</th>
+        <th>Privacy</th>
+        <th>Price</th>
+        <th>Location</th>
+        <th>Ticket Sell</th>
+      </tr>
+    </thead>
+    <tbody id="event-list">
+      <!-- Events will be dynamically inserted here -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (!userData) {
+      window.location.href = '/auth/login.html';
+      return;
+    }
+
+    document.getElementById('user-name').textContent = userData.name;
+
+    const authDiv = document.getElementById('auth');
+    const profilePic = document.getElementById('profile-pic');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+
+    profilePic.addEventListener('click', () => {
+      dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.getElementById('logout').addEventListener('click', () => {
+      localStorage.removeItem('user');
+      window.location.href = '/';
+    });
+
+    window.addEventListener('click', (e) => {
+      if (!e.target.matches('#profile-pic') && !e.target.matches('.dropdown-menu') && !e.target.matches('.dropdown-menu a')) {
+        dropdownMenu.style.display = 'none';
+      }
+    });
+
+    try {
+      const response = await fetch(`/myEvents?email=${encodeURIComponent(userData.email)}`);
+      const events = await response.json();
+      console.log(events);
+
+      const eventList = document.getElementById('event-list');
+      eventList.innerHTML = '';
+
+      let totalTickets = 0;
+      let totalPrice = 0;
+
+      for (const event of events) {
+        const response_event = await fetch(`/bookingDetails?event_id=${encodeURIComponent(event.id)}`);
+        const eventDetails = await response_event.json();
+        console.log("eventDetails", eventDetails);
+
+        let total_ticket = 0;
+        eventDetails.forEach(booking_item => {
+          total_ticket += booking_item.tickets;
+        });
+       
+        const eventRow = document.createElement('tr');
+        eventRow.innerHTML = `
+          <td>${event.event_name}</td>
+          <td>${event.category}</td>
+          <td>${new Date(event.event_time).toLocaleString()}</td>
+          <td>${event.event_privacy}</td>
+          <td>${event.event_price}</td>
+          <td>${event.event_location}</td>
+          <td>${total_ticket}</td>
+        `;
+        
+        eventRow.addEventListener('click', () => {
+          window.location.href = `/addEvent/editEvent.html?id=${event.id}`;
+        });
+        
+        eventList.appendChild(eventRow);
+        totalTickets += total_ticket;
+        totalPrice += event.event_price * total_ticket;
+      }
+
+      document.getElementById('tickets_count').textContent = totalTickets;
+      document.getElementById('tickets_price').textContent = `${totalPrice.toFixed(2)}`;
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  });
+</script>
+
+</body>
+</html>
