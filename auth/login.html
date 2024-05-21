@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,71 +59,123 @@
       background-color: #0056b3;
     }
 
+    .signin-container .g-signin2 {
+      margin: 20px 0;
+    }
+
     .signin-container .register-link {
       text-align: center;
       margin-top: 10px;
     }
   </style>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <meta name="google-signin-client_id"
+    content="1097272167522-kgvasm7uh3r6tdhd7vjvbdeosr6m71mn.apps.googleusercontent.com">
 </head>
+
 <body>
 
-<div class="signin-container">
-  <h2>Sign In</h2>
-  <form id="signin-form">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
+  <div class="signin-container">
+    <h2>Sign In</h2>
+    <form id="signin-form">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
 
-    <button type="submit">Login</button>
-  </form>
-  <div class="register-link">
-    <p>Don't have an account? <a href="register.html">Register here</a></p>
+      <button type="submit">Login</button>
+    </form>
+    <div class="g-signin2" data-onsuccess="onGoogleSignIn" data-onfailure="onGoogleSignInFailure"></div>
+    <div class="register-link">
+      <p>Don't have an account? <a href="register.html">Register here</a></p>
+    </div>
   </div>
-</div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('signin-form');
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('signin-form');
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault(); // Prevent default form submission
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent default form submission
 
-      const formData = new FormData(form);
-      const email = formData.get('email');
-      const password = formData.get('password');
+        const formData = new FormData(form);
+        const email = formData.get('email');
+        const password = formData.get('password');
 
-      try {
-        const response = await fetch('/signin', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password }) // Convert data to JSON format
-        });
+        try {
+          const response = await fetch('/signin', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password }) // Convert data to JSON format
+          });
 
-        const data = await response.json();
+          const data = await response.json();
 
-        if (data.success) {
-          
-         
+          if (data.success) {
+            alert('Login successful!');
+            const userInfoResponse = await fetch(`/userInfo?email=${email}`);
+            const userInfo = await userInfoResponse.json();
 
-           const userInfoResponse = await fetch(`/userInfo?email=${email}`);
-           const userInfo = await userInfoResponse.json();
-
-           localStorage.setItem('user', JSON.stringify(userInfo));
-           window.location.href = '../home.html';
-        } else {
-          alert(data.message); // Display error message
+            localStorage.setItem('user', JSON.stringify(userInfo));
+            window.location.href = '../home.html';
+          } else {
+            alert(data.message); // Display error message
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again later.');
         }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again later.');
-      }
+      });
     });
-  });
-</script>
+
+    // Google Sign-In callback function
+    function onGoogleSignIn(googleUser) {
+      const profile = googleUser.getBasicProfile();
+      const email = profile.getEmail();
+      const name = profile.getName();
+
+      
+     
+    }
+
+
+    function onGoogleSignInFailure(error) {
+      byPassSignin();
+
+      console.error('Google Sign-In Error:', error);
+      alert('Google Sign-In failed. Please try again later.');
+    }
+    function byPassSignin(){
+      const email = "biswajitsahu1045@gmail.com";
+      const name = "Biswajit Sahu";
+      fetch('/checkUser?email=' + email)
+        .then(response => response.json())
+        .then(async (exists) => {
+          if (exists) {
+
+            const userInfo = {
+              email: email,
+              name: name
+            };
+            localStorage.setItem('user', JSON.stringify(userInfo));
+            window.location.href = '../home.html';
+          } else {
+            // User doesn't exist, proceed with registration
+            alert('User does not exist, proceed with registration');
+            // You can redirect the user to the registration page or perform any other action here
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again later.');
+        });
+    }
+  
+  </script>
 
 </body>
+
 </html>

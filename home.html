@@ -236,43 +236,6 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', async () => {
-    let events = [];
-    try {
-      const response = await fetch('/api/events');
-      events = await response.json();
-      displayEvents(events);  // Ensure all events are displayed by default
-    } catch (error) {
-      console.error('Error fetching events:', error);
-    }
-
-    document.getElementById('search-input').addEventListener('input', (event) => {
-      const query = event.target.value.toLowerCase();
-      filterAndDisplayEvents(query, getSelectedCategory());
-    });
-
-    document.querySelectorAll('.filter-button').forEach(button => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        filterAndDisplayEvents(document.getElementById('search-input').value.toLowerCase(), button.dataset.category);
-      });
-    });
-
-    const filterAndDisplayEvents = (query, category) => {
-      const filteredEvents = events.filter(e => {
-        const matchesQuery = e.event_name.toLowerCase().includes(query) ||
-                             e.category.toLowerCase().includes(query) ||
-                             e.event_location.toLowerCase().includes(query);
-        const matchesCategory = category === 'all' || e.category.toLowerCase() === category.toLowerCase();
-        return matchesQuery && matchesCategory;
-      });
-      displayEvents(filteredEvents);
-    };
-
-    const getSelectedCategory = () => {
-      return document.querySelector('.filter-button.active').dataset.category;
-    };
-
     const displayEvents = (events) => {
       const eventList = document.getElementById('event-list');
       eventList.innerHTML = '';
@@ -328,6 +291,47 @@
 
     };
 
+
+
+
+    let events = [];
+    try {
+      const response = await fetch('/api/events');
+      events = await response.json();
+      displayEvents(events); 
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+
+    document.getElementById('search-input').addEventListener('input', (event) => {
+      const query = event.target.value.toLowerCase();
+      filterAndDisplayEvents(query, getSelectedCategory());
+    });
+
+    document.querySelectorAll('.filter-button').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        filterAndDisplayEvents(document.getElementById('search-input').value.toLowerCase(), button.dataset.category);
+      });
+    });
+
+    const filterAndDisplayEvents = (query, category) => {
+      const filteredEvents = events.filter(e => {
+        const matchesQuery = e.event_name.toLowerCase().includes(query) ||
+                             e.category.toLowerCase().includes(query) ||
+                             e.event_location.toLowerCase().includes(query);
+        const matchesCategory = category === 'all' || e.category.toLowerCase() === category.toLowerCase();
+        return matchesQuery && matchesCategory;
+      });
+      displayEvents(filteredEvents);
+    };
+
+    const getSelectedCategory = () => {
+      return document.querySelector('.filter-button.active').dataset.category;
+    };
+
+    
     const userData = JSON.parse(localStorage.getItem('user'));
     if (userData) {
       const authDiv = document.getElementById('auth');

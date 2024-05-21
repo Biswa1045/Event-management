@@ -3,6 +3,7 @@ const express = require('express');
 const mysql = require('mysql2/promise');
 const path = require('path');
 const bodyParser = require('body-parser');
+const e = require('express');
 const app = express();
 const port = 3300;
 app.use(bodyParser.json());
@@ -72,6 +73,25 @@ app.get('/myBookings', async (req, res) => {
     res.status(500).send('Error querying database');
   }
 });
+app.get('/checkUser', async (req, res) => {
+  try {
+    const email = req.query.email; // Use req.query for GET request parameters
+    const connection = await pool.getConnection();
+    try {
+      const [results] = await connection.query('SELECT * FROM users WHERE email = ?', [email]);
+      if(results.length>0) {res.json(true);}
+      else{
+        res.json(false);
+      }
+       // Return the first result as we are querying by email
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error querying database');
+  }
+});
 app.get('/userInfo', async (req, res) => {
   try {
     const email = req.query.email; // Use req.query for GET request parameters
@@ -107,6 +127,7 @@ app.post('/signin', async (req, res) => {
     res.status(500).json({ success: false, message: 'Error signing in user' });
   }
 });
+
 app.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
