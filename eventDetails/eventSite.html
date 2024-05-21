@@ -26,6 +26,7 @@
         .notification-content {
             flex-grow: 1;
         }
+
         .chat-message {
             margin: 10px 0;
             padding: 10px;
@@ -62,29 +63,29 @@
     <div class="event-lists">
         <div>
             <div class="event-details" id="event-details">
-                <!-- Event details content will be dynamically inserted here -->
+
             </div>
             <div class="notification-card" id="notification-card">
                 <span class="notification-icon">🔔</span>
                 <div class="notification-content" id="notification-content">
-                    <!-- Notification text will be dynamically inserted here -->
+
                 </div>
             </div>
         </div>
-       
 
-        
+
+
 
         <div class="event-chat">
             <div id="ticket-total" class="ticket-total">
-                <!-- Total tickets will be displayed here -->
+
             </div>
             <div class="chat-box">
                 <div class="chat-header">
                     <h3>Event Chat</h3>
                 </div>
                 <div class="chat-content" id="chat-content">
-                    <!-- Chat messages will appear here -->
+
                 </div>
                 <div class="chat-input">
                     <input type="text" id="chat-input" placeholder="Type a message..." />
@@ -92,7 +93,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 
     <script>
@@ -171,14 +172,14 @@
                     <p>${event.event_details}</p>
                 `;
 
-                
+
                 const notificationContent = document.getElementById('notification-content');
                 notificationContent.textContent = event.notification;
 
             } catch (error) {
                 console.error('Error fetching event details:', error);
             }
-            // Fetch and display chat messages
+
             try {
                 const chatResponse = await fetch(`/chatDetails?event_id=${eventId}`);
                 const chats = await chatResponse.json();
@@ -191,7 +192,7 @@
                     chatContent.appendChild(chatMessage);
                 });
 
-                chatContent.scrollTop = chatContent.scrollHeight; // Scroll to the bottom
+                chatContent.scrollTop = chatContent.scrollHeight;
 
             } catch (error) {
                 console.error('Error fetching chat messages:', error);
@@ -221,7 +222,7 @@
                             const newMessage = document.createElement('div');
                             newMessage.className = 'chat-message';
                             newMessage.innerHTML = `<span>${userData.name}:</span> ${chatMessage}`;
-                          //  newMessage.innerHTML = `<span style="color: ${event.event_owner === userData.email ? 'red' : 'black'}">${userData.name}:</span> ${chatMessage}`;
+                            //  newMessage.innerHTML = `<span style="color: ${event.event_owner === userData.email ? 'red' : 'black'}">${userData.name}:</span> ${chatMessage}`;
 
                             chatContent.appendChild(newMessage);
                             chatInput.value = '';
@@ -235,8 +236,8 @@
                 }
             });
 
-            // Optional: Allow pressing Enter to send a message
-            document.getElementById('chat-input').addEventListener('keypress', function(event) {
+
+            document.getElementById('chat-input').addEventListener('keypress', function (event) {
                 if (event.key === 'Enter') {
                     document.getElementById('send-button').click();
                 }

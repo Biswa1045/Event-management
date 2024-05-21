@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Event Details</title>
   <link rel="stylesheet" href="eventDetails.css">
- 
+
 </head>
+
 <body>
 
   <div class="toolbar">
     <div class="auth" id="auth">
-      <a href="/"><h1>EventManage</h1></a>
+      <a href="/">
+        <h1>EventManage</h1>
+      </a>
     </div>
     <div class="auth" id="auth-links">
       <a href="/dashboard/dashboard.html">My Bookings</a>
@@ -24,34 +28,34 @@
       </div>
     </div>
   </div>
-  
-  <div class="event-lists" >
-    
+
+  <div class="event-lists">
+
     <div class="event-details" id="event-details">
       <!-- First card content -->
     </div>
-   
-      <div class="event-ticket">
-        <div class="ticket-counter">
-          <button class="minus-btn">-</button>
-          <span class="ticket-count">1</span>
-          <button class="plus-btn">+</button>
-        </div>
-        <button class="buy-ticket-btn">Buy Ticket</button>
-       
+
+    <div class="event-ticket">
+      <div class="ticket-counter">
+        <button class="minus-btn">-</button>
+        <span class="ticket-count">1</span>
+        <button class="plus-btn">+</button>
       </div>
-    
+      <button class="buy-ticket-btn">Buy Ticket</button>
+
+    </div>
+
   </div>
- 
+
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const eventId = urlParams.get('id');
       console.log(eventId);
       if (!eventId) {
-    console.error('Event ID is missing.');
-    return;
-  }
+        console.error('Event ID is missing.');
+        return;
+      }
       const userData = JSON.parse(localStorage.getItem('user'));
       if (!userData) {
         window.location.href = '/auth/login.html';
@@ -78,15 +82,15 @@
           dropdownMenu.style.display = 'none';
         }
       });
-      
+
       try {
         const response = await fetch(`/eventDetails?id=${eventId}`);
         const categoryImages = {
-        'Literary': '/assets/Literary.jpg',
-        'Music': '/assets/Music.jpg',
-       'Sports': '/assets/Sports.jpg',
-        'Tech': '/assets/Tech.jpg'
-      };
+          'Literary': '/assets/Literary.jpg',
+          'Music': '/assets/Music.jpg',
+          'Sports': '/assets/Sports.jpg',
+          'Tech': '/assets/Tech.jpg'
+        };
         const event = await response.json();
         console.log(event);
 
@@ -103,7 +107,7 @@
           hour12: true
         });
 
-        
+
         const imageSrc = categoryImages[event.category] || '/assets/Tech.jpg';
         const eventDetails = document.getElementById('event-details');
         eventDetails.innerHTML = `
@@ -119,78 +123,75 @@
         console.error('Error fetching event details:', error);
       }
       const minusBtn = document.querySelector('.minus-btn');
-  const plusBtn = document.querySelector('.plus-btn');
-  const ticketCount = document.querySelector('.ticket-count');
-  const ticketPrice = document.querySelector('.ticket-price');
-  const buyTicketBtn = document.querySelector('.buy-ticket-btn');
+      const plusBtn = document.querySelector('.plus-btn');
+      const ticketCount = document.querySelector('.ticket-count');
+      const ticketPrice = document.querySelector('.ticket-price');
+      const buyTicketBtn = document.querySelector('.buy-ticket-btn');
 
-  let count = 1; // Initial ticket count
+      let count = 1;
 
-  // Update ticket count display
-  const updateCount = () => {
-    ticketCount.textContent = count;
-   
-  };
 
-  // Event listener for minus button
-  minusBtn.addEventListener('click', () => {
-    if (count > 1) {
-      count--;
+      const updateCount = () => {
+        ticketCount.textContent = count;
+
+      };
+
+
+      minusBtn.addEventListener('click', () => {
+        if (count > 1) {
+          count--;
+          updateCount();
+        }
+      });
+
+
+      plusBtn.addEventListener('click', () => {
+        count++;
+        updateCount();
+      });
+
+
+
+
       updateCount();
-    }
-  });
 
-  // Event listener for plus button
-  plusBtn.addEventListener('click', () => {
-    count++;
-    updateCount();
-  });
+      buyTicketBtn.addEventListener('click', async () => {
+        const userData = JSON.parse(localStorage.getItem('user'));
+        const userEmail = userData.email;
 
-  
+        if (!userEmail || !eventId || !count) {
+          console.error('Missing required data for buying ticket.');
+          return;
+        }
 
-  // Initialize ticket count display
-  updateCount();
-  // Event listener for buy ticket button
-buyTicketBtn.addEventListener('click', async () => {
-    // Retrieve user email from local storage
-    const userData = JSON.parse(localStorage.getItem('user'));
-    const userEmail = userData.email;
-
-    // Make sure all necessary data is available
-    if (!userEmail || !eventId || !count) {
-        console.error('Missing required data for buying ticket.');
-        return;
-    }
-
-    try {
-        // Make API request
-        const response = await fetch('/buyTicket', {
+        try {
+          const response = await fetch('/buyTicket', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                eventId: eventId,
-                userEmail: userEmail,
-                ticketCount: count
+              eventId: eventId,
+              userEmail: userEmail,
+              ticketCount: count
             })
-        });
+          });
 
-        if (response.ok) {
+          if (response.ok) {
             const responseData = await response.json();
             alert(`Tickets bought successfully: ${responseData.message}`);
-            // You can redirect or perform any other action upon successful purchase
-        } else {
+          } else {
             console.error('Failed to buy tickets:', response.statusText);
             alert('Failed to buy tickets. Please try again.');
+          }
+        } catch (error) {
+          console.error('Error buying tickets:', error);
+          alert('An error occurred while buying tickets. Please try again later.');
         }
-    } catch (error) {
-        console.error('Error buying tickets:', error);
-        alert('An error occurred while buying tickets. Please try again later.');
-    }
-});
+      });
 
     });
   </script>
 </body>
+
 </html>

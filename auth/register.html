@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -65,64 +66,64 @@
     }
   </style>
 </head>
+
 <body>
 
-<div class="register-container">
-  <h2>Register</h2>
-  <form id="register-form">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required>
+  <div class="register-container">
+    <h2>Register</h2>
+    <form id="register-form">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
 
-    <button type="submit">Register</button>
-  </form>
-  <div class="signin-link">
-    <p>Already have an account? <a href="login.html">Sign in here</a></p>
+      <button type="submit">Register</button>
+    </form>
+    <div class="signin-link">
+      <p>Already have an account? <a href="login.html">Sign in here</a></p>
+    </div>
   </div>
-</div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('register-form');
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('register-form');
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault(); // Prevent default form submission
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-      const formData = new FormData(form);
-      const name = formData.get('name');
-      const email = formData.get('email');
-      const password = formData.get('password');
+        const formData = new FormData(form);
+        const name = formData.get('name');
+        const email = formData.get('email');
+        const password = formData.get('password');
 
-      try {
-        const response = await fetch('/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ name, email, password }) // Convert data to JSON format
-        });
+        try {
+          const response = await fetch('/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, email, password })
+          });
 
-        const data = await response.json();
+          const data = await response.json();
 
-        if (response.ok) {
-          alert(data.message); // Display success message
-          // Optionally redirect to another page
-          // window.location.href = '/signin.html';
-        } else {
-          alert(data.message); // Display error message
+          if (response.ok) {
+            alert(data.message);
+          } else {
+            alert(data.message);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again later.');
         }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again later.');
-      }
+      });
     });
-  });
-</script>
+  </script>
 
 </body>
+
 </html>

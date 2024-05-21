@@ -25,13 +25,13 @@ const pool = mysql.createPool({
 //get events
 app.get('/api/events', async (req, res) => {
   try {
-    
+
     const connection = await pool.getConnection();
     try {
       const [results, fields] = await connection.query("SELECT * FROM events WHERE event_privacy = 'Public'");
       res.json(results);
     } finally {
-      
+
       connection.release();
     }
   } catch (error) {
@@ -44,11 +44,11 @@ app.get('/myEvents', async (req, res) => {
     const connection = await pool.getConnection();
 
     try {
-     
-      const [results, fields] = await connection.query('SELECT * FROM events WHERE event_owner = ?',[email]);
+
+      const [results, fields] = await connection.query('SELECT * FROM events WHERE event_owner = ?', [email]);
       res.json(results);
     } finally {
-      
+
       connection.release();
     }
   } catch (error) {
@@ -61,12 +61,12 @@ app.get('/myBookings', async (req, res) => {
     const connection = await pool.getConnection();
 
     try {
-     
-      const [results, fields] = await connection.query('SELECT * FROM bookings WHERE user = ?',[email]);
+
+      const [results, fields] = await connection.query('SELECT * FROM bookings WHERE user = ?', [email]);
       res.json(results);
-     
+
     } finally {
-      
+
       connection.release();
     }
   } catch (error) {
@@ -75,15 +75,15 @@ app.get('/myBookings', async (req, res) => {
 });
 app.get('/checkUser', async (req, res) => {
   try {
-    const email = req.query.email; // Use req.query for GET request parameters
+    const email = req.query.email;
     const connection = await pool.getConnection();
     try {
       const [results] = await connection.query('SELECT * FROM users WHERE email = ?', [email]);
-      if(results.length>0) {res.json(true);}
-      else{
+      if (results.length > 0) { res.json(true); }
+      else {
         res.json(false);
       }
-       // Return the first result as we are querying by email
+
     } finally {
       connection.release();
     }
@@ -94,11 +94,11 @@ app.get('/checkUser', async (req, res) => {
 });
 app.get('/userInfo', async (req, res) => {
   try {
-    const email = req.query.email; // Use req.query for GET request parameters
+    const email = req.query.email;
     const connection = await pool.getConnection();
     try {
       const [results] = await connection.query('SELECT email, name FROM users WHERE email = ?', [email]);
-      res.json(results[0]); // Return the first result as we are querying by email
+      res.json(results[0]);
     } finally {
       connection.release();
     }
@@ -109,7 +109,7 @@ app.get('/userInfo', async (req, res) => {
 });
 app.post('/signin', async (req, res) => {
   const { email, password } = req.body;
- 
+
   try {
     const connection = await pool.getConnection();
     try {
@@ -132,7 +132,6 @@ app.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Check if user already exists
     const connection = await pool.getConnection();
     const [existingUsers] = await connection.query('SELECT * FROM users WHERE email = ?', [email]);
     connection.release();
@@ -141,7 +140,7 @@ app.post('/register', async (req, res) => {
       return res.status(400).json({ success: false, message: 'User already exists' });
     }
 
-    // Insert new user into database
+
     const newUser = { email, name, password };
     const insertQuery = 'INSERT INTO users (email, name, password) VALUES (?, ?, ?)';
     const insertValues = [newUser.email, newUser.name, newUser.password];
@@ -166,11 +165,11 @@ app.post('/addEvent', async (req, res) => {
   try {
     const connection = await pool.getConnection();
     try {
-      // Get the next id by counting the current number of events
+
       const [rows] = await connection.query('SELECT COUNT(*) AS count FROM events');
       const id = rows[0].count + 1;
-      
-      
+
+
       await connection.query(
         'INSERT INTO events (id, event_name, event_details, event_time, event_privacy, event_price, event_location, event_owner, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [id, event_name, event_details, event_time, event_privacy, event_price, event_location, event_owner, category]
@@ -190,11 +189,11 @@ app.get('/eventDetails', async (req, res) => {
     const connection = await pool.getConnection();
 
     try {
-     
-      const [results] = await connection.query('SELECT * FROM events WHERE id = ?',[id]);
+
+      const [results] = await connection.query('SELECT * FROM events WHERE id = ?', [id]);
       res.json(results[0]);
     } finally {
-      
+
       connection.release();
     }
   } catch (error) {
@@ -207,12 +206,12 @@ app.get('/eventTicketsCount', async (req, res) => {
     const connection = await pool.getConnection();
 
     try {
-     
-      const [results] = await connection.query('SELECT event_id, SUM(tickets) AS total_tickets FROM bookings WHERE event_id = ?',[id]);
+
+      const [results] = await connection.query('SELECT event_id, SUM(tickets) AS total_tickets FROM bookings WHERE event_id = ?', [id]);
       res.json(results[0]);
       console.log(results[0].total_tickets);
     } finally {
-      
+
       connection.release();
     }
   } catch (error) {
@@ -244,21 +243,21 @@ app.post('/buyTicket', async (req, res) => {
   try {
     const connection = await pool.getConnection();
     try {
-      // Retrieve event details
+
       const [eventRows] = await connection.query('SELECT * FROM events WHERE id = ?', [eventId]);
       if (eventRows.length === 0) {
         return res.status(404).json({ message: 'Event not found.' });
       }
       const event = eventRows[0];
 
-      // Calculate total price
+
       const totalPrice = event.event_price * ticketCount;
       const [rows] = await connection.query('SELECT COUNT(*) AS count FROM bookings');
       const id = rows[0].count + 1;
-      // Insert booking into the database
+
       await connection.query(
         'INSERT INTO bookings (id,event_id, user, tickets, total_price) VALUES (?, ?, ?, ?, ?)',
-        [id,eventId, userEmail, ticketCount, totalPrice]
+        [id, eventId, userEmail, ticketCount, totalPrice]
       );
 
       res.status(201).json({ message: 'Tickets bought successfully!' });
@@ -272,7 +271,7 @@ app.post('/buyTicket', async (req, res) => {
 });
 app.post('/updateEvent', async (req, res) => {
   const {
-   
+
     event_name,
     event_details,
     event_time,
@@ -298,7 +297,7 @@ app.post('/updateEvent', async (req, res) => {
       const values = [
         event_name,
         event_details,
-        new Date(event_time), // Ensure the date is properly formatted
+        new Date(event_time),
         event_privacy,
         event_price,
         event_location,
@@ -412,25 +411,25 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'home.html'));
 });
 app.get('/signin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'auth','login.html'));
+  res.sendFile(path.join(__dirname, 'auth', 'login.html'));
 });
 app.get('/register', (req, res) => {
-  res.sendFile(path.join(__dirname, 'auth','register.html'));
+  res.sendFile(path.join(__dirname, 'auth', 'register.html'));
 });
 app.get('/dashboard', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dashboard','dashboard.html'));
+  res.sendFile(path.join(__dirname, 'dashboard', 'dashboard.html'));
 });
 app.get('/addEvent', (req, res) => {
-  res.sendFile(path.join(__dirname, 'addEvent','addEvent.html'));
+  res.sendFile(path.join(__dirname, 'addEvent', 'addEvent.html'));
 });
 app.get('/myEvents', (req, res) => {
-  res.sendFile(path.join(__dirname, 'myEvents','myEvents.html'));
+  res.sendFile(path.join(__dirname, 'myEvents', 'myEvents.html'));
 });
 app.get('/eventDetails', (req, res) => {
-  res.sendFile(path.join(__dirname, 'eventDetails','eventDetails.html'));
+  res.sendFile(path.join(__dirname, 'eventDetails', 'eventDetails.html'));
 });
 app.get('/editEvent', (req, res) => {
-  res.sendFile(path.join(__dirname, 'addEvent','editEvent.html'));
+  res.sendFile(path.join(__dirname, 'addEvent', 'editEvent.html'));
 });
 
 app.listen(port, () => {

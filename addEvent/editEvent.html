@@ -178,7 +178,7 @@
       const urlParams = new URLSearchParams(window.location.search);
       const eventId = urlParams.get('id');
       const notificationText = document.getElementById('notification-text').value;
-      try{
+      try {
         const response = await fetch(`/updateNotification`, {
           method: 'POST',
           headers: {
@@ -187,17 +187,17 @@
           body: JSON.stringify({
             notification: notificationText,
             event_id: eventId
-      })
+          })
         });
 
         if (response.ok) {
           alert('Notification updated successfully!');
-          
+
         } else {
           const errorData = await response.json();
           alert(`Error: ${errorData.message}`);
         }
-      }catch(error){
+      } catch (error) {
         console.error('Error updating notification:', error);
         alert('An error occurred while updating the notification.');
       }

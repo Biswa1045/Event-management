@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,17 +13,17 @@
 
     .toolbar {
       position: absolute;
-      top: 20px; /* Adjust top margin */
-      left: 20px; /* Adjust left margin */
-      right: 20px; /* Adjust right margin */
+      top: 20px;
+      left: 20px;
+      right: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 20px;
-      border-radius: 10px; 
+      border-radius: 10px;
       background-color: rgba(0, 0, 0, 0.7);
       color: #fff;
-      z-index: 1; /* Ensure the toolbar stays above the hero image */
+      z-index: 1;
     }
 
     .toolbar h1 {
@@ -36,7 +37,7 @@
       position: relative;
       font-size: 16px;
     }
-    
+
     .toolbar .auth a {
       margin-right: 15px;
       color: #fff;
@@ -58,7 +59,7 @@
     .dropdown-menu {
       display: none;
       position: absolute;
-      top: 50px; /* Position below the toolbar */
+      top: 50px;
       right: 0;
       background-color: #050505;
       color: #000;
@@ -102,7 +103,7 @@
       background-color: #f0f0f0;
       text-align: center;
       position: relative;
-      z-index: 1; /* Ensure the search bar stays above the hero image */
+      z-index: 1;
     }
 
     .search-bar input[type="text"] {
@@ -135,7 +136,7 @@
     #event-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px; /* Adjust gap between cards as needed */
+      gap: 20px;
     }
 
     .event-card {
@@ -146,7 +147,7 @@
       background-color: #fff;
       display: flex;
       flex-direction: column;
-      width: calc(33.333% - 20px); /* Adjust width and margin for 3 cards per row */
+      width: calc(33.333% - 20px);
       margin-bottom: 20px;
     }
 
@@ -176,106 +177,108 @@
     }
   </style>
 </head>
+
 <body>
 
-<!-- Toolbar -->
-<div class="toolbar">
-  <h1>EventManage</h1>
-  <div class="auth" id="auth">
-    <a href="/auth/login.html">Sign In</a> / <a href="/auth/register.html">Register</a>
-  </div>
-</div>
-
-<!-- Hero section -->
-<div class="hero">
-  <h2>Welcome to Event Management</h2>
-</div>
-
-<!-- Search bar -->
-<div class="search-bar">
-  <input type="text" id="search-input" placeholder="Search events...">
-  <div id="category-filter">
-    <button class="filter-button active" data-category="all">All</button>
-    <button class="filter-button" data-category="Sports">Sports</button>
-    <button class="filter-button" data-category="Tech">Tech</button>
-    <button class="filter-button" data-category="Music">Music</button>
-  </div>
-</div>
-
-<!-- Event list -->
-<div class="event-list" id="event-list">
-  <!-- Events will be dynamically inserted here -->
-</div>
-
-<!-- Footer -->
-<footer style="background-color: #333; color: #fff; padding: 20px 0; text-align: center; position: relative; z-index: 1;">
-  <div style="display: flex; justify-content: space-around; flex-wrap: wrap; padding: 20px;">
-    <div style="flex: 1; min-width: 200px; margin-bottom: 20px;">
-      <h3 style="margin-top: 0;">About Us</h3>
-      <p>This is an Event Management website assessment for Hyscalar by Biswajit Sahu.</p>
-    </div>
-    <div style="flex: 1; min-width: 200px; margin-bottom: 20px;">
-      <h3 style="margin-top: 0;">Quick Links</h3>
-      <ul style="list-style-type: none; padding: 0;">
-        <li><a href="#" style="color: #fff; text-decoration: none;">Home</a></li>
-        <li><a href="#" style="color: #fff; text-decoration: none;">Events</a></li>
-        <li><a href="#" style="color: #fff; text-decoration: none;">About</a></li>
-        <li><a href="#" style="color: #fff; text-decoration: none;">Contact</a></li>
-      </ul>
-    </div>
-    <div style="flex: 1; min-width: 200px; margin-bottom: 20px;">
-      <h3 style="margin-top: 0;">Contact Us</h3>
-      <p>Email: biswajitsahu1045@gmail.com</p>
-      <p>Phone: +91 7205550528</p>
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <h1>EventManage</h1>
+    <div class="auth" id="auth">
+      <a href="/auth/login.html">Sign In</a> / <a href="/auth/register.html">Register</a>
     </div>
   </div>
-  <div style="background-color: #222; padding: 10px 0;">
-    <p style="margin: 0;">&copy; 2024 EventManage. All rights reserved.</p>
+
+  <!-- Hero section -->
+  <div class="hero">
+    <h2>Welcome to Event Management</h2>
   </div>
-</footer>
 
-<script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const displayEvents = (events) => {
-      const eventList = document.getElementById('event-list');
-      eventList.innerHTML = '';
+  <!-- Search bar -->
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Search events...">
+    <div id="category-filter">
+      <button class="filter-button active" data-category="all">All</button>
+      <button class="filter-button" data-category="Sports">Sports</button>
+      <button class="filter-button" data-category="Tech">Tech</button>
+      <button class="filter-button" data-category="Music">Music</button>
+    </div>
+  </div>
 
-      const categoryImages = {
-        'Literary': 'assets/Literary.jpg',
-        'Music': 'assets/Music.jpg',
-        'Sports': 'assets/Sports.jpg',
-        'Tech': 'assets/Tech.jpg'
-      };
+  <!-- Event list -->
+  <div class="event-list" id="event-list">
 
-      events.forEach(event => {
-  const eventElement = document.createElement('div');
-  eventElement.className = 'event-card';
-  eventElement.addEventListener('click', () => {
-    window.location.href = `/eventDetails/eventDetails.html?id=${event.id}`;
-  });
-  const eventImage = document.createElement('img');
-  const imageSrc = categoryImages[event.category] || 'assets/Tech.jpg'; // Use a default image if the category doesn't match
-  eventImage.src = imageSrc;
-  eventImage.alt = `${event.category}`;
+  </div>
 
-  const eventContent = document.createElement('div');
-  eventContent.className = 'event-card-content';
+  <!-- Footer -->
+  <footer
+    style="background-color: #333; color: #fff; padding: 20px 0; text-align: center; position: relative; z-index: 1;">
+    <div style="display: flex; justify-content: space-around; flex-wrap: wrap; padding: 20px;">
+      <div style="flex: 1; min-width: 200px; margin-bottom: 20px;">
+        <h3 style="margin-top: 0;">About Us</h3>
+        <p>This is an Event Management website assessment for Hyscalar by Biswajit Sahu.</p>
+      </div>
+      <div style="flex: 1; min-width: 200px; margin-bottom: 20px;">
+        <h3 style="margin-top: 0;">Quick Links</h3>
+        <ul style="list-style-type: none; padding: 0;">
+          <li><a href="#" style="color: #fff; text-decoration: none;">Home</a></li>
+          <li><a href="#" style="color: #fff; text-decoration: none;">Events</a></li>
+          <li><a href="#" style="color: #fff; text-decoration: none;">About</a></li>
+          <li><a href="#" style="color: #fff; text-decoration: none;">Contact</a></li>
+        </ul>
+      </div>
+      <div style="flex: 1; min-width: 200px; margin-bottom: 20px;">
+        <h3 style="margin-top: 0;">Contact Us</h3>
+        <p>Email: biswajitsahu1045@gmail.com</p>
+        <p>Phone: +91 7205550528</p>
+      </div>
+    </div>
+    <div style="background-color: #222; padding: 10px 0;">
+      <p style="margin: 0;">&copy; 2024 EventManage. All rights reserved.</p>
+    </div>
+  </footer>
 
-  // Format event date and time
-  const eventDateTime = new Date(event.event_time);
-  const formattedDate = eventDateTime.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-  const formattedTime = eventDateTime.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true
-  });
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const displayEvents = (events) => {
+        const eventList = document.getElementById('event-list');
+        eventList.innerHTML = '';
 
-  eventContent.innerHTML = `
+        const categoryImages = {
+          'Literary': 'assets/Literary.jpg',
+          'Music': 'assets/Music.jpg',
+          'Sports': 'assets/Sports.jpg',
+          'Tech': 'assets/Tech.jpg'
+        };
+
+        events.forEach(event => {
+          const eventElement = document.createElement('div');
+          eventElement.className = 'event-card';
+          eventElement.addEventListener('click', () => {
+            window.location.href = `/eventDetails/eventDetails.html?id=${event.id}`;
+          });
+          const eventImage = document.createElement('img');
+          const imageSrc = categoryImages[event.category] || 'assets/Tech.jpg';
+          eventImage.src = imageSrc;
+          eventImage.alt = `${event.category}`;
+
+          const eventContent = document.createElement('div');
+          eventContent.className = 'event-card-content';
+
+
+          const eventDateTime = new Date(event.event_time);
+          const formattedDate = eventDateTime.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          const formattedTime = eventDateTime.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+          });
+
+          eventContent.innerHTML = `
     <h3>${event.event_name}</h3>
     <p>Date: ${formattedDate}</p>
     <p>Time: ${formattedTime}</p>
@@ -283,59 +286,56 @@
     <p class="price">$${event.event_price}</p>
   `;
 
-  eventElement.appendChild(eventImage);
-  eventElement.appendChild(eventContent);
-  
-  eventList.appendChild(eventElement);
-});
+          eventElement.appendChild(eventImage);
+          eventElement.appendChild(eventContent);
 
-    };
+          eventList.appendChild(eventElement);
+        });
 
+      };
 
+      let events = [];
+      try {
+        const response = await fetch('/api/events');
+        events = await response.json();
+        displayEvents(events);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
 
-
-    let events = [];
-    try {
-      const response = await fetch('/api/events');
-      events = await response.json();
-      displayEvents(events); 
-    } catch (error) {
-      console.error('Error fetching events:', error);
-    }
-
-    document.getElementById('search-input').addEventListener('input', (event) => {
-      const query = event.target.value.toLowerCase();
-      filterAndDisplayEvents(query, getSelectedCategory());
-    });
-
-    document.querySelectorAll('.filter-button').forEach(button => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        filterAndDisplayEvents(document.getElementById('search-input').value.toLowerCase(), button.dataset.category);
+      document.getElementById('search-input').addEventListener('input', (event) => {
+        const query = event.target.value.toLowerCase();
+        filterAndDisplayEvents(query, getSelectedCategory());
       });
-    });
 
-    const filterAndDisplayEvents = (query, category) => {
-      const filteredEvents = events.filter(e => {
-        const matchesQuery = e.event_name.toLowerCase().includes(query) ||
-                             e.category.toLowerCase().includes(query) ||
-                             e.event_location.toLowerCase().includes(query);
-        const matchesCategory = category === 'all' || e.category.toLowerCase() === category.toLowerCase();
-        return matchesQuery && matchesCategory;
+      document.querySelectorAll('.filter-button').forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          filterAndDisplayEvents(document.getElementById('search-input').value.toLowerCase(), button.dataset.category);
+        });
       });
-      displayEvents(filteredEvents);
-    };
 
-    const getSelectedCategory = () => {
-      return document.querySelector('.filter-button.active').dataset.category;
-    };
+      const filterAndDisplayEvents = (query, category) => {
+        const filteredEvents = events.filter(e => {
+          const matchesQuery = e.event_name.toLowerCase().includes(query) ||
+            e.category.toLowerCase().includes(query) ||
+            e.event_location.toLowerCase().includes(query);
+          const matchesCategory = category === 'all' || e.category.toLowerCase() === category.toLowerCase();
+          return matchesQuery && matchesCategory;
+        });
+        displayEvents(filteredEvents);
+      };
 
-    
-    const userData = JSON.parse(localStorage.getItem('user'));
-    if (userData) {
-      const authDiv = document.getElementById('auth');
-      authDiv.innerHTML = `
+      const getSelectedCategory = () => {
+        return document.querySelector('.filter-button.active').dataset.category;
+      };
+
+
+      const userData = JSON.parse(localStorage.getItem('user'));
+      if (userData) {
+        const authDiv = document.getElementById('auth');
+        authDiv.innerHTML = `
         <a href="dashboard/dashboard.html">MyBookings</a>
         <span>${userData.name}</span>
         <img src="/assets/profile.png" alt="Profile Picture" class="profile-pic" id="profile-pic">
@@ -346,26 +346,27 @@
         </div>
       `;
 
-      const profilePic = document.getElementById('profile-pic');
-      const dropdownMenu = document.getElementById('dropdown-menu');
+        const profilePic = document.getElementById('profile-pic');
+        const dropdownMenu = document.getElementById('dropdown-menu');
 
-      profilePic.addEventListener('click', () => {
-        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-      });
+        profilePic.addEventListener('click', () => {
+          dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
 
-      document.getElementById('logout').addEventListener('click', () => {
-        localStorage.removeItem('user');
-        location.reload();
-      });
+        document.getElementById('logout').addEventListener('click', () => {
+          localStorage.removeItem('user');
+          location.reload();
+        });
 
-      window.addEventListener('click', (e) => {
-        if (!e.target.matches('#profile-pic') && !e.target.matches('.dropdown-menu') && !e.target.matches('.dropdown-menu a')) {
-          dropdownMenu.style.display = 'none';
-        }
-      });
-    }
-  });
-</script>
+        window.addEventListener('click', (e) => {
+          if (!e.target.matches('#profile-pic') && !e.target.matches('.dropdown-menu') && !e.target.matches('.dropdown-menu a')) {
+            dropdownMenu.style.display = 'none';
+          }
+        });
+      }
+    });
+  </script>
 
 </body>
+
 </html>

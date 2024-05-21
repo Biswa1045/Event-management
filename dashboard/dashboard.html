@@ -150,7 +150,7 @@
       </tr>
     </thead>
     <tbody id="event-list">
-      <!-- Events will be dynamically inserted here -->
+     
     </tbody>
   </table>
 </div>
@@ -158,7 +158,7 @@
 <script>
   document.addEventListener('DOMContentLoaded', async () => {
 
-    // Fetch user data from localStorage
+    
     const userData = JSON.parse(localStorage.getItem('user'));
     if (!userData) {
       window.location.href = '/auth/login.html';
@@ -186,7 +186,7 @@
       }
     });
 
-    // Fetch event data
+    
     try {
   const response = await fetch(`/myBookings?email=${encodeURIComponent(userData.email)}`);
   const bookings = await response.json();
@@ -196,10 +196,10 @@
   bookings.forEach(async (booking) => {
     const response_event = await fetch(`/eventDetails?id=${encodeURIComponent(booking.event_id)}`);
     const eventDetails = await response_event.json();
-    // Create a new row for each booking
+    
     const row = document.createElement('tr');
 
-    // Parse and format the event time
+    
     const eventDate = new Date(eventDetails.event_time);
     const formattedDate = eventDate.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -225,7 +225,7 @@
           window.location.href = `/eventDetails/eventSite.html?id=${booking.event_id}`;
         });
 
-    // Append the row to the table
+   
     eventList.appendChild(row);
   });
 

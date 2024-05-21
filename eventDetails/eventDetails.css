@@ -1,257 +1,263 @@
 /* Combined CSS */
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 20px;
-  }
-  
-  .toolbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    z-index: 1000;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .toolbar h1 {
-    margin: 0;
-    font-size: 24px;
-  }
-  
-  .toolbar .auth {
-    display: flex;
-    align-items: center;
-    font-size: 16px;
-  }
-  
-  .toolbar .auth a {
-    margin-right: 15px;
-    color: #fff;
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  
-  .toolbar .auth a:hover {
-    color: #ddd;
-  }
-  
-  .toolbar .profile-pic {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-    cursor: pointer;
-  }
-  
-  .dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 60px;
-    right: 0;
-    background-color: #333;
-    color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .dropdown-menu a {
-    display: block;
-    padding: 10px;
-    color: #fff;
-    text-decoration: none;
-  }
-  
-  .dropdown-menu a:hover {
-    background-color: rgba(240, 240, 240, 0.2);
-  }
-  
-  .event-details {
-    
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .event-details img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .event-details h1 {
-    margin: 0 0 10px;
-  }
-  
-  .event-details p {
-    margin: 10px 0;
-    color: #555;
-  }
-  
-  .event-card {
-    display: flex;
-    
-    flex-direction: column;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .event-image {
-    width: 100%;
-    height: auto;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-  }
-  
-  .event-info {
-    padding: 20px;
-  }
-  
-  .event-title {
-    margin-top: 0;
-  }
-  
-  .event-description {
-    margin-bottom: 10px;
-  }
-  
- 
-  .card {
-    
-    flex: 1; /* Each card takes equal space */
-    margin: 10px; /* Optional: Add spacing between cards */
-  }
-  .event-lists {
-    justify-content: space-between;
-    gap: 20px; 
-    margin-top: 80px;
-    display: flex; /* Use flexbox */
-  }
-  .event-ticket {
-    flex: 1; /* Each card takes equal space */
-    margin: 10px; /* Optional: Add spacing between cards */
-    max-width: 600px;
-    height: 200px;
-    margin: 0 auto;
-    background-color: #fff;
-    
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 20px;
+}
+
+.toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toolbar h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.toolbar .auth {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+
+.toolbar .auth a {
+  margin-right: 15px;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.toolbar .auth a:hover {
+  color: #ddd;
+}
+
+.toolbar .profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 10px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.dropdown-menu a:hover {
+  background-color: rgba(240, 240, 240, 0.2);
+}
+
+.event-details {
+
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.event-details img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.event-details h1 {
+  margin: 0 0 10px;
+}
+
+.event-details p {
+  margin: 10px 0;
+  color: #555;
+}
+
+.event-card {
+  display: flex;
+
+  flex-direction: column;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.event-image {
+  width: 100%;
+  height: auto;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.event-info {
+  padding: 20px;
+}
+
+.event-title {
+  margin-top: 0;
+}
+
+.event-description {
+  margin-bottom: 10px;
+}
+
+
+.card {
+
+  flex: 1;
+  margin: 10px;
+}
+
+.event-lists {
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 80px;
+  display: flex;
+}
+
+.event-ticket {
+  flex: 1;
+  margin: 10px;
+  max-width: 600px;
+  height: 200px;
+  margin: 0 auto;
+  background-color: #fff;
+
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 .ticket-counter {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .minus-btn,
-  .plus-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 24px;
-    border: none;
-    background-color: #f0f0f0;
-    cursor: pointer;
-  }
-  
-  .ticket-count {
-    font-size: 24px;
-    margin: 0 10px;
-  }
-  .ticket-price {
-    font-size: 24px;
-    margin: 0 10px;
-  }
-  .buy-ticket-btn {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin-top: 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .buy-ticket-btn:hover {
-    background-color: #0056b3;
-  }
-  .event-chat {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.minus-btn,
+.plus-btn {
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  border: none;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.ticket-count {
+  font-size: 24px;
+  margin: 0 10px;
+}
+
+.ticket-price {
+  font-size: 24px;
+  margin: 0 10px;
+}
+
+.buy-ticket-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.buy-ticket-btn:hover {
+  background-color: #0056b3;
+}
+
+.event-chat {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 .chat-box {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .chat-header {
-    background-color: #007bff;
-    color: white;
-    padding: 10px;
-    text-align: center;
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  text-align: center;
 }
 
 .chat-content {
-    flex: 1;
-    padding: 10px;
-    overflow-y: auto;
-    background-color: #f9f9f9;
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
 }
 
 .chat-input {
-    display: flex;
-    border-top: 1px solid #ccc;
+  display: flex;
+  border-top: 1px solid #ccc;
 }
 
 #chat-input {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 0;
-    outline: none;
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 0;
+  outline: none;
 }
 
 #send-button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
 
 #send-button:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
+
 .ticket-total {
   text-align: center;
   margin: 10px 0;

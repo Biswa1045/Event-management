@@ -97,8 +97,7 @@
       const form = document.getElementById('signin-form');
 
       form.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Prevent default form submission
-
+        event.preventDefault();
         const formData = new FormData(form);
         const email = formData.get('email');
         const password = formData.get('password');
@@ -109,7 +108,7 @@
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, password }) // Convert data to JSON format
+            body: JSON.stringify({ email, password })
           });
 
           const data = await response.json();
@@ -131,49 +130,49 @@
       });
     });
 
-    // Google Sign-In callback function
+
     function onGoogleSignIn(googleUser) {
       const profile = googleUser.getBasicProfile();
       const email = profile.getEmail();
       const name = profile.getName();
-
-      
-     
+      alert("sign in successful.")
     }
 
 
     function onGoogleSignInFailure(error) {
-      byPassSignin();
+    //  byPassSignin();
 
       console.error('Google Sign-In Error:', error);
       alert('Google Sign-In failed. Please try again later.');
     }
-    function byPassSignin(){
-      const email = "biswajitsahu1045@gmail.com";
-      const name = "Biswajit Sahu";
-      fetch('/checkUser?email=' + email)
-        .then(response => response.json())
-        .then(async (exists) => {
-          if (exists) {
+    //there is prolem in google security so Sign in with google is throwing error So I bypass the sign in process with a demo data.
+    //Showing error for try to access google sign in by http insted of https. 
+    // function byPassSignin() {
+    //   const email = "biswajitsahu1045@gmail.com";
+    //   const name = "Biswajit Sahu";
+    //   fetch('/checkUser?email=' + email)
+    //     .then(response => response.json())
+    //     .then(async (exists) => {
+    //       if (exists) {
 
-            const userInfo = {
-              email: email,
-              name: name
-            };
-            localStorage.setItem('user', JSON.stringify(userInfo));
-            window.location.href = '../home.html';
-          } else {
-            // User doesn't exist, proceed with registration
-            alert('User does not exist, proceed with registration');
-            // You can redirect the user to the registration page or perform any other action here
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred. Please try again later.');
-        });
-    }
-  
+    //         const userInfo = {
+    //           email: email,
+    //           name: name
+    //         };
+    //         localStorage.setItem('user', JSON.stringify(userInfo));
+    //         window.location.href = '../home.html';
+    //       } else {
+    //         // User doesn't exist, proceed with registration
+    //         alert('User does not exist, proceed with registration');
+    //         // You can redirect the user to the registration page or perform any other action here
+    //       }
+    //     })
+    //     .catch(error => {
+    //       console.error('Error:', error);
+    //       alert('An error occurred. Please try again later.');
+    //     });
+    // }
+
   </script>
 
 </body>
